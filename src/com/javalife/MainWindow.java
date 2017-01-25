@@ -9,13 +9,13 @@ import java.awt.event.MouseEvent;
 
 
 public class MainWindow {
-    JFrame frame;
-    JPanel lifePanel;
-    JPanel buttonPanel;
+    private JFrame frame;
+    private JPanel lifePanel;
+    private JPanel buttonPanel;
 
-    int POINTSIZE = 10; //px
+    private int POINTSIZE = 10; //px
 
-    static boolean[][] dots = new boolean[50][50];
+    private static boolean[][] dots = new boolean[50][50];
 
 
     public MainWindow() {
@@ -162,7 +162,6 @@ public class MainWindow {
 
 
             g2d.setPaint(Color.RED);
-//            g2d.fillRect(0, 0, POINTSIZE, POINTSIZE);
             for (int i = 0; i < dots.length; i++) {
                 for(int j = 0; j < dots.length; j++) {
                     if(dots[i][j]) {
