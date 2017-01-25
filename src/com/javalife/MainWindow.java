@@ -14,8 +14,11 @@ public class MainWindow {
     private JPanel buttonPanel;
 
     private int POINTSIZE = 10; //px
+    private int generation = 1;
 
     private static boolean[][] dots = new boolean[50][50];
+    private static boolean[][] ngDots = new boolean[50][50];
+    Dots dot = new Dots();
 
 
     public MainWindow() {
@@ -132,17 +135,22 @@ public class MainWindow {
                 int count = obhod(i, j);
                 if (dots[i][j]) {
                     if (count < 2 || count > 3) {
-                        dots[i][j] = false;
+                        ngDots[i][j] = false;
+                    } else {
+                        ngDots[i][j] = true;
                     }
 
                 } else {
                     if (count == 3) {
-                        dots[i][j] = true;
+                        ngDots[i][j] = true;
                     }
                 }
             }
         }
+        dots = ngDots;
+        ngDots = dot.clear(ngDots);
     }
+
 
     class Canvas extends JPanel{
 
@@ -195,6 +203,7 @@ public class MainWindow {
         public void actionPerformed(ActionEvent e) {
             if ("Next Turn".equals(e.getActionCommand())) {
                 calculateLife();
+                generation++;
                 lifePanel.repaint();
             }
 
@@ -206,11 +215,9 @@ public class MainWindow {
         public void actionPerformed(ActionEvent e) {
             if ("Reset".equals(e.getActionCommand())) {
                 System.out.println("reset");
-                for (int i = 0; i < dots.length; i++ ) {
-                    for (int j = 0; j < dots.length; j++ ) {
-                        dots[i][j] = false;
-                    }
-                }
+                dots = dot.clear(dots);
+                ngDots = dots;
+                generation = 1;
                 lifePanel.repaint();
             }
 
@@ -222,7 +229,12 @@ public class MainWindow {
         @Override
         public void mouseClicked(MouseEvent e) {
             System.out.println(e.getPoint());
-            dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE] = true;
+            if (!dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE]) {
+                dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE] = true;
+            } else {
+                dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE] = false;
+            }
+
         }
 
         @Override
