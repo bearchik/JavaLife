@@ -39,7 +39,7 @@ public class MainWindow {
         buttonPanel = new JPanel();
         lifePanel.setSize(500,500);
         buttonPanel.setSize(100,100);
-        frame.setSize(500, 600);
+        frame.setSize(600, 600);
         JButton btStart = new JButton("Start");
         btStart.addActionListener(new StartAction());
         JButton btNextTurn = new JButton("Next Turn");
@@ -55,70 +55,89 @@ public class MainWindow {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public int obhod(int i, int j) {
+    public int obhod(int xCoordinate, int yCoordinate) {
         int count = 0;
+
+        System.out.println(xCoordinate + " " + yCoordinate);
 
         for (int k = -1; k < 2; k++ ) {
             for ( int m = -1; m < 2; m++) {
                 if (k != 0 || m != 0 ) {
 
-                    boolean flag = false;
+                    boolean edgeFlag = false;
 
-                    if ( i + k == -1 && j + m == -1 ) {
+                    if (xCoordinate == 49 && yCoordinate == 0) {
+                        edgeFlag = false;
+                    }
+
+                    if (!edgeFlag && xCoordinate + k == -1 && yCoordinate + m == -1) {
                         if (dots[dots.length - 1][dots.length - 1]) {
                             count++;
                         }
-
-                        flag = true;
-
+                        edgeFlag = true;
                     }
 
-                    if (i + k > dots.length  -1 && j + m > dots.length - 1) {
+                    if (!edgeFlag && xCoordinate + k > dots.length - 1 && yCoordinate + m > dots.length - 1) {
                         if (dots[0][0]) {
                             count++;
                         }
-
-                        flag = true;
-
+                        edgeFlag = true;
                     }
 
-                    if (i + k == -1 && j + m >= 0) {
-                        if (dots[dots.length - 1][0]) {
-                            count++;
-                        }
 
-                        flag = true;
+                    if (!edgeFlag && xCoordinate + k  > dots.length - 1 && yCoordinate + m == -1) {
 
-                    }
-
-                    if (i + k > dots.length-1 && j + m <= dots.length - 1) {
-                        if (dots[0][j]) {
-                            count++;
-                        }
-
-                        flag = true;
-
-                    }
-
-                    if (i + k >= 0 && j + m == -1) {
                         if (dots[0][dots.length - 1]) {
                             count++;
                         }
 
-                        flag = true;
+                        edgeFlag = true;
                     }
 
-                    if (i + k >= 0 && j + m > dots.length - 1) {
-                        if (dots[i][dots.length - 1]) {
+                    if (!edgeFlag && xCoordinate + k  == -1 && yCoordinate + m >= dots.length) {
+
+                        if (dots[dots.length - 1][0]) {
                             count++;
                         }
 
-                        flag = true;
-
+                        edgeFlag = true;
                     }
 
-                    if ( !flag ) {
-                        if (dots[i + k][j + m]) {
+                    if (!edgeFlag && xCoordinate + k == -1 && yCoordinate + m < dots.length) {
+                        if (dots[dots.length - 1][yCoordinate + m]) {
+                            count++;
+                        }
+
+                        edgeFlag = true;
+                    }
+
+                    if (!edgeFlag && xCoordinate + k < dots.length && yCoordinate + m == -1) {
+                        if (dots[xCoordinate + k][dots.length - 1]) {
+                            count++;
+                        }
+
+                        edgeFlag = true;
+                    }
+
+                    if(!edgeFlag && xCoordinate + k >= 0 && yCoordinate + m >= dots.length ) {
+                        if (dots[xCoordinate + k][0]) {
+                            count++;
+                        }
+
+                        edgeFlag = true;
+                    }
+
+                    if (!edgeFlag && xCoordinate + k >= dots.length && yCoordinate + m >= 0 ) {
+                        if (dots[0][yCoordinate + m]) {
+                            count++;
+                        }
+
+                        edgeFlag = true;
+                    }
+
+
+                    if ( !edgeFlag ) {
+                        if (dots[xCoordinate + k][yCoordinate + m]) {
                             count++;
                         }
                     }
@@ -149,8 +168,6 @@ public class MainWindow {
                 }
             }
         }
-
-//        dots = ngDots;
         dots = dot.copyArray(ngDots);
         ngDots = dot.clearArray(ngDots);
     }
