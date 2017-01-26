@@ -16,9 +16,10 @@ public class MainWindow {
     private int POINTSIZE = 10; //px
     private int generation = 1;
 
+    DotArray dot = new DotArray();
     private static boolean[][] dots = new boolean[50][50];
     private static boolean[][] ngDots = new boolean[50][50];
-    Dots dot = new Dots();
+
 
 
     public MainWindow() {
@@ -139,17 +140,22 @@ public class MainWindow {
                     } else {
                         ngDots[i][j] = true;
                     }
-
                 } else {
                     if (count == 3) {
                         ngDots[i][j] = true;
+                    } else {
+                        ngDots[i][j] = false;
                     }
                 }
             }
         }
-        dots = ngDots;
-        ngDots = dot.clear(ngDots);
+
+//        dots = ngDots;
+        dots = dot.copyArray(ngDots);
+        ngDots = dot.clearArray(ngDots);
     }
+
+
 
 
     class Canvas extends JPanel{
@@ -215,8 +221,8 @@ public class MainWindow {
         public void actionPerformed(ActionEvent e) {
             if ("Reset".equals(e.getActionCommand())) {
                 System.out.println("reset");
-                dots = dot.clear(dots);
-                ngDots = dots;
+                dots = dot.clearArray(dots);
+                ngDots = dot.clearArray(ngDots);
                 generation = 1;
                 lifePanel.repaint();
             }
