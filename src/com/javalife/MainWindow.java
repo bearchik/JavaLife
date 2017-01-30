@@ -16,9 +16,7 @@ public class MainWindow {
     private int POINTSIZE = 10; //px
     private int generation = 1;
 
-    DotArray dot = new DotArray();
-    private static boolean[][] dots = new boolean[50][50];
-    private static boolean[][] ngDots = new boolean[50][50];
+    Life life = new Life();
 
 
 
@@ -53,126 +51,8 @@ public class MainWindow {
         frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
     }
-
-    public int obhod(int xCoordinate, int yCoordinate) {
-        int count = 0;
-
-        System.out.println(xCoordinate + " " + yCoordinate);
-
-        for (int k = -1; k < 2; k++ ) {
-            for ( int m = -1; m < 2; m++) {
-                if (k != 0 || m != 0 ) {
-
-                    boolean edgeFlag = false;
-
-                    if (xCoordinate == 49 && yCoordinate == 0) {
-                        edgeFlag = false;
-                    }
-
-                    if (!edgeFlag && xCoordinate + k == -1 && yCoordinate + m == -1) {
-                        if (dots[dots.length - 1][dots.length - 1]) {
-                            count++;
-                        }
-                        edgeFlag = true;
-                    }
-
-                    if (!edgeFlag && xCoordinate + k > dots.length - 1 && yCoordinate + m > dots.length - 1) {
-                        if (dots[0][0]) {
-                            count++;
-                        }
-                        edgeFlag = true;
-                    }
-
-
-                    if (!edgeFlag && xCoordinate + k  > dots.length - 1 && yCoordinate + m == -1) {
-
-                        if (dots[0][dots.length - 1]) {
-                            count++;
-                        }
-
-                        edgeFlag = true;
-                    }
-
-                    if (!edgeFlag && xCoordinate + k  == -1 && yCoordinate + m >= dots.length) {
-
-                        if (dots[dots.length - 1][0]) {
-                            count++;
-                        }
-
-                        edgeFlag = true;
-                    }
-
-                    if (!edgeFlag && xCoordinate + k == -1 && yCoordinate + m < dots.length) {
-                        if (dots[dots.length - 1][yCoordinate + m]) {
-                            count++;
-                        }
-
-                        edgeFlag = true;
-                    }
-
-                    if (!edgeFlag && xCoordinate + k < dots.length && yCoordinate + m == -1) {
-                        if (dots[xCoordinate + k][dots.length - 1]) {
-                            count++;
-                        }
-
-                        edgeFlag = true;
-                    }
-
-                    if(!edgeFlag && xCoordinate + k >= 0 && yCoordinate + m >= dots.length ) {
-                        if (dots[xCoordinate + k][0]) {
-                            count++;
-                        }
-
-                        edgeFlag = true;
-                    }
-
-                    if (!edgeFlag && xCoordinate + k >= dots.length && yCoordinate + m >= 0 ) {
-                        if (dots[0][yCoordinate + m]) {
-                            count++;
-                        }
-
-                        edgeFlag = true;
-                    }
-
-
-                    if ( !edgeFlag ) {
-                        if (dots[xCoordinate + k][yCoordinate + m]) {
-                            count++;
-                        }
-                    }
-
-                }
-            }
-        }
-
-        return count;
-    }
-
-    public void calculateLife() {
-        for (int i = 0; i < dots.length; i++ ) {
-            for (int j = 0; j < dots.length; j++ ) {
-                int count = obhod(i, j);
-                if (dots[i][j]) {
-                    if (count < 2 || count > 3) {
-                        ngDots[i][j] = false;
-                    } else {
-                        ngDots[i][j] = true;
-                    }
-                } else {
-                    if (count == 3) {
-                        ngDots[i][j] = true;
-                    } else {
-                        ngDots[i][j] = false;
-                    }
-                }
-            }
-        }
-        dots = dot.copyArray(ngDots);
-        ngDots = dot.clearArray(ngDots);
-    }
-
-
 
 
     class Canvas extends JPanel{
@@ -193,9 +73,9 @@ public class MainWindow {
 
 
             g2d.setPaint(Color.RED);
-            for (int i = 0; i < dots.length; i++) {
-                for(int j = 0; j < dots.length; j++) {
-                    if(dots[i][j]) {
+            for (int i = 0; i < life.worldLength(); i++) {
+                for(int j = 0; j < life.worldLength(); j++) {
+                    if(life.get(i,j)) {
                         g2d.fillOval(i * POINTSIZE, j * POINTSIZE, POINTSIZE, POINTSIZE);
                     }
                 }
@@ -225,7 +105,7 @@ public class MainWindow {
         @Override
         public void actionPerformed(ActionEvent e) {
             if ("Next Turn".equals(e.getActionCommand())) {
-                calculateLife();
+                life.calculateLife();
                 generation++;
                 lifePanel.repaint();
             }
@@ -238,8 +118,7 @@ public class MainWindow {
         public void actionPerformed(ActionEvent e) {
             if ("Reset".equals(e.getActionCommand())) {
                 System.out.println("reset");
-                dots = dot.clearArray(dots);
-                ngDots = dot.clearArray(ngDots);
+                life.clear();
                 generation = 1;
                 lifePanel.repaint();
             }
@@ -252,10 +131,10 @@ public class MainWindow {
         @Override
         public void mouseClicked(MouseEvent e) {
             System.out.println(e.getPoint());
-            if (!dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE]) {
-                dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE] = true;
+            if (!life.get(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE )) {
+                life.setTrue(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE );
             } else {
-                dots[e.getPoint().x/POINTSIZE][e.getPoint().y/POINTSIZE] = false;
+                life.setFalse(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE );
             }
 
         }
