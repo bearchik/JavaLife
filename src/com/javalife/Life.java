@@ -29,7 +29,6 @@ public class Life {
         ngDots = dot.clearArray(ngDots);
     }
 
-
     private int obhod(boolean[][] dots, int xCoordinate, int yCoordinate) {
         int count = 0;
 

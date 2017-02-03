@@ -2,6 +2,7 @@ package com.javalife;
 
 public class DotArray {
         private static boolean[][] dotsArray = new boolean[50][50];
+
         public boolean[][] clearArray (boolean[][] dotsArray) {
 
             for (int i = 0; i < dotsArray.length; i++ ) {

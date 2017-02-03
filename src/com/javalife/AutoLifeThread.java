@@ -3,8 +3,7 @@ package com.javalife;
 import static java.lang.Thread.sleep;
 public class AutoLifeThread implements Runnable {
 
-
-
+    public final int delay = 1000;
     private Life life = new Life();
     private Canvas cv = new Canvas(life);
 
@@ -15,21 +14,23 @@ public class AutoLifeThread implements Runnable {
 
     @Override
     public void run() {
-        Thread t = Thread.currentThread();
         while (true) {
             if(!Thread.interrupted()) {
                 try {
                     life.calculateLife();
                     cv.repaint();
-                    sleep(1000);
+                    System.out.println(delay);
+                    sleep(delay);
                 } catch (InterruptedException e) {
-                    return;
+                        return;
                 }
             } else {
                 return;
             }
 
         }
+
+
 
     }
 }
