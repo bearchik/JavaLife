@@ -1,23 +1,24 @@
 package com.javalife;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
+
 
 
 public class MainWindow {
     private JFrame frame;
-    private JPanel lifePanel;
+
     private JPanel buttonPanel;
 
     private int generation = 1;
 
     Life life = new Life();
+    Canvas cv = new Canvas(life);
 
-
+    Runnable r = new AutoLifeThread(life, cv);
+    Thread tr = new Thread(r);
 
     public MainWindow() {
 
@@ -32,11 +33,12 @@ public class MainWindow {
 
     public void createGUI () {
         frame = new JFrame("Java Life");
-        lifePanel = new JPanel();
         buttonPanel = new JPanel();
-        lifePanel.setSize(500,500);
         buttonPanel.setSize(100,100);
         frame.setSize(600, 600);
+
+        cv.setSize(500,500);
+
         JButton btStart = new JButton("Start");
         btStart.addActionListener(new StartAction());
         JButton btNextTurn = new JButton("Next Turn");
@@ -46,10 +48,17 @@ public class MainWindow {
         buttonPanel.add(btStart);
         buttonPanel.add(btNextTurn);
         buttonPanel.add(btReset);
-        frame.getContentPane().add(lifePanel);
+
+        frame.getContentPane().add(cv);
         frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        try {
+            tr.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -58,13 +67,14 @@ public class MainWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("start");
             if ("Start".equals(e.getActionCommand())) {
-                Canvas cv = new Canvas();
-                cv.setLife(life);
-                cv.setSize(500,500);
-                lifePanel.add(cv);
-                lifePanel.repaint();
+                if (tr.isAlive()) {
+                    tr.interrupt();
+                } else {
+                    r = new AutoLifeThread(life, cv);
+                    tr = new Thread(r);
+                    tr.start();
+                }
             }
 
         }
@@ -76,7 +86,7 @@ public class MainWindow {
             if ("Next Turn".equals(e.getActionCommand())) {
                 life.calculateLife();
                 generation++;
-                lifePanel.repaint();
+                cv.repaint();
             }
 
         }
@@ -86,10 +96,12 @@ public class MainWindow {
         @Override
         public void actionPerformed(ActionEvent e) {
             if ("Reset".equals(e.getActionCommand())) {
-                System.out.println("reset");
+                if (tr.isAlive()) {
+                    tr.interrupt();
+                }
                 life.clear();
                 generation = 1;
-                lifePanel.repaint();
+                cv.repaint();
             }
 
         }

@@ -11,16 +11,13 @@ public class Canvas extends JPanel {
     private int POINTSIZE = 10; //px
     private Life life = new Life();
 
-    public void setLife (Life life) {
+    public Canvas(Life life) {
         this.life = life;
-    }
-
-    public Canvas() {
         Canvas.MyMouseListener ml = new Canvas.MyMouseListener();
         addMouseListener(ml);
     }
 
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         g2d.setPaint(Color.LIGHT_GRAY);
@@ -42,7 +39,7 @@ public class Canvas extends JPanel {
 
     }
 
-    class MyMouseListener implements MouseInputListener {
+    private class MyMouseListener implements MouseInputListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
