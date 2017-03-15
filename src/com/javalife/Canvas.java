@@ -44,12 +44,13 @@ public class Canvas extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             System.out.println(e.getPoint());
-            if (!life.get(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE )) {
-                life.setTrue(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE );
-            } else {
-                life.setFalse(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE );
+            if(e.getPoint().x <= 500 && e.getPoint().x <= 500) {
+                if (!life.get(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE )) {
+                    life.setTrue(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE );
+                } else {
+                    life.setFalse(e.getPoint().x/POINTSIZE,e.getPoint().y/POINTSIZE );
+                }
             }
-
         }
 
         @Override

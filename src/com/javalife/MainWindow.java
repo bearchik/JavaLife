@@ -16,6 +16,7 @@ public class MainWindow {
 
     private JButton btStart;
     private JButton btNextTurn;
+    private JButton btReset;
 
     private int generation = 1;
 
@@ -44,7 +45,6 @@ public class MainWindow {
 
         cv.setSize(500,500);
 
-
         JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 500, 2000, 1000);
         speedSlider.addChangeListener(new MySliderListener());
         buttonPanel.add(speedSlider);
@@ -58,7 +58,7 @@ public class MainWindow {
         btStart.addActionListener(new ButtonActions());
         btNextTurn = new JButton("Next Turn");
         btNextTurn.addActionListener(new ButtonActions());
-        JButton btReset = new JButton("Reset");
+        btReset = new JButton("Reset");
         btReset.addActionListener(new ButtonActions());
         buttonPanel.add(btStart);
         buttonPanel.add(btNextTurn);
