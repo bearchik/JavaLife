@@ -18,13 +18,14 @@ public class MainWindow {
     private JButton btNextTurn;
     private JButton btReset;
 
+    private JSlider speedSlider;
+
     private int generation = 1;
 
     Life life = new Life();
     Canvas cv = new Canvas(life);
 
-    Runnable r = new AutoLifeThread(life, cv);
-    Thread tr = new Thread(r);
+    AutoLifeThread r = new AutoLifeThread(life, cv);
 
     public MainWindow() {
 
@@ -45,11 +46,11 @@ public class MainWindow {
 
         cv.setSize(500,500);
 
-        JSlider speedSlider = new JSlider(JSlider.HORIZONTAL, 500, 2000, 1000);
+        speedSlider = new JSlider(JSlider.HORIZONTAL, 100, 2000, StaticValues.defSliderValue);
         speedSlider.addChangeListener(new MySliderListener());
         buttonPanel.add(speedSlider);
         Hashtable labelTable = new Hashtable();
-        labelTable.put( new Integer( 500 ), new JLabel("Fast") );
+        labelTable.put( new Integer( 100 ), new JLabel("Fast") );
         labelTable.put( new Integer( 2000 ), new JLabel("Slow") );
         speedSlider.setLabelTable(labelTable);
         speedSlider.setPaintLabels(true);
@@ -77,14 +78,14 @@ public class MainWindow {
         public void actionPerformed(ActionEvent e) {
 
             if ("Start".equals(e.getActionCommand()) || "Stop".equals(e.getActionCommand())) {
-                if (tr.isAlive()) {
-                    tr.interrupt();
+                if (r.isAlive()) {
+                    r.interrupt();
                     btStart.setText("Start");
                     btNextTurn.setEnabled(true);
+                    speedSlider.setValue(StaticValues.defSliderValue);
                 } else {
                     r = new AutoLifeThread(life, cv);
-                    tr = new Thread(r);
-                    tr.start();
+                    r.start();
                     btStart.setText("Stop");
                     btNextTurn.setEnabled(false);
                 }
@@ -97,14 +98,15 @@ public class MainWindow {
             }
 
             if ("Reset".equals(e.getActionCommand())) {
-                if (tr.isAlive()) {
-                    tr.interrupt();
+                if (r.isAlive()) {
+                    r.interrupt();
                 }
                 life.clear();
                 generation = 1;
                 cv.repaint();
                 btNextTurn.setEnabled(true);
                 btStart.setText("Start");
+                speedSlider.setValue(StaticValues.defSliderValue);
             }
         }
     }
@@ -112,7 +114,12 @@ public class MainWindow {
     private class MySliderListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-
+            if (r.isAlive()) {
+                JSlider slider = (JSlider)e.getSource();
+                if (!slider.getValueIsAdjusting()) {
+                    r.changeDelay((int)slider.getValue());
+                }
+            }
         }
     }
 }

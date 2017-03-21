@@ -1,9 +1,8 @@
 package com.javalife;
 
-import static java.lang.Thread.sleep;
-public class AutoLifeThread implements Runnable {
+public class AutoLifeThread extends Thread {
 
-    public volatile int delay = 1000;
+    private volatile int delay = 1000;
     private Life life = new Life();
     private Canvas cv = new Canvas(life);
 
@@ -23,7 +22,6 @@ public class AutoLifeThread implements Runnable {
                 try {
                     life.calculateLife();
                     cv.repaint();
-                    System.out.println(delay);
                     sleep(delay);
                 } catch (InterruptedException e) {
                         return;
